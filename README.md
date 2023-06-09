@@ -1,3 +1,5 @@
+
+
 # Blog
 <<<<<<< HEAD
 БД MSSQL настройки в Blog.APP/appsettings.jsom  
@@ -11,7 +13,7 @@ Blog.Services
 	бизнес модели (ViewModels)  
 	Логика для контроллеров  
 Blog.App  
-	Views  
+	Views  (добавлены представления для страниц с ошибками)
 	Controllers   
 	Частично логика контроллеров  
 
