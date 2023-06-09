@@ -1,0 +1,59 @@
+﻿@model Blog.Services.ViewModels.Users.UserViewModel
+@{
+    ViewData["Title"] = "Профиль";
+    var claimUserId = User.Claims.FirstOrDefault()?.Value;
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.js"></script>
+
+<div class="max-width-550 m-auto mb-5">
+    <form class="mt-5" method="get" asp-controller="User" asp-action="EditUser" asp-route-id="@claimUserId">
+        <h3>Профиль пользователя</h3>
+        <hr class="hr" />
+        <div asp-validation-summary="ModelOnly" class="text-danger fs-6"></div>
+
+        <div class="form-group mb-4 position-relative">
+            <div class="row">
+                <label  class="form-label col-sm-4 col-form-label">Имя</label>
+                <div class="col-sm-8">
+                    <label asp-for="Name" class="form-control">@Model.Name</label>
+                </div>
+            </div>
+            <span asp-validation-for="Name" class="text-danger error-message"></span>
+        </div>
+
+        <div class="form-group mb-4 position-relative">
+            <div class="row">
+                <label class="form-label col-sm-4 col-form-label">Фамилия</label>
+                <div class="col-sm-8">
+                    <label asp-for="LastName" class="form-control">@Model.LastName</label>
+                </div>
+            </div>
+            <span asp-validation-for="LastName" class="text-danger error-message"></span>
+        </div>
+
+        <div class="form-group mb-4 position-relative">
+            <div class="row">
+                <label asp-for="Email" class="form-label col-sm-4 col-form-label"></label>
+                <div class="col-sm-8">
+                    <label asp-for="Email" class="form-control">@Model.Email</label>
+                    @foreach (var role in Model.Roles)
+                    {
+                                <span class="badge bg-primary">@role.Name</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <input asp-for="Id" hidden></input>
+        @if (claimUserId == Model.Id.ToString())
+        {
+                    <button type="submit" class="btn btn-primary">Редактировать</button>
+        }
+
+    </form>
+</div>
+

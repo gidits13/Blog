@@ -1,0 +1,16 @@
+﻿@model Blog.Services.ViewModels.Comments.CommentAddViewModel
+
+<main class="form-text">
+    <form method="post" asp-controller="Comment" asp-action="AddComment" asp-route-postid="@Model.PostId">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h1 class="h3 mb-3 fw-normal">Добавление комментария</h1>
+
+        <div class="form-floating">
+            <input asp-for="Text" type="text" class="form-control" id="floatingInput" placeholder="">
+            <label asp-for="Text" for="floatingInput">Комментарий</label>
+            <span asp-validation-for="Text" class="text-danger"></span>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Добавить</button>
+    </form>
+</main>

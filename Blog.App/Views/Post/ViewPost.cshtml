@@ -1,0 +1,48 @@
+﻿@model Blog.Services.ViewModels.Posts.PostViewModel
+
+<div class="card w-75">
+    <h1 class="card-title text-center"> @Model.Title</h1>
+    @{
+        <div>
+            <h6>Tags:</h6>
+            @foreach (var tag in Model.Tags)
+            {
+                <span class="badge rounded-pill text-bg-success" style="color:green; display:inline;">@tag.Name</span>
+            }
+        </div>
+    }
+    <p>@Model.Text</p>
+    <h7>Автор: @Model.User.Name</h7>
+    <p></p>
+    <p></p>
+</div>
+@{
+    <div>
+        <a class="btn btn-outline-secondary" method="get" asp-controller="Comment" asp-action="AddComment" asp-route-postid="@Model.Id">Добавить комментарий</a>
+    </div>
+    <p></p>
+    if (Model.Comments.Count() == 0)
+    {
+        <h5 style="color: gray;">Коментарии отсутствуют</h5>
+    }
+    else
+    {
+        foreach (var comment in Model.Comments)
+        {
+            <div class="card w-75">
+                <p>@comment.Text</p>
+                <h7>Автор: @comment.User.Name</h7>
+                @{
+                    var a = User.IsInRole("Admin");
+                    var b = comment.User.Name;
+                    var c = User.Identity.Name;
+                }
+                @if (User.IsInRole("Admin")|| User.Identity.Name==comment.User.Email)
+                {
+                    <a asp-controller="Comment" asp-action="EditComment" asp-route-id="@comment.Id"> <button type="submit" class="btn btn-sm btn-outline-secondary">Edit</button></a>
+                    <a asp-controller="Comment" asp-action="DeleteComment" asp-route-id="@comment.Id" asp-route-postid="@Model.Id"> <button type="submit" class="btn btn-sm btn-danger">Delete</button></a>
+                }
+            </div>
+        }
+    }
+}
