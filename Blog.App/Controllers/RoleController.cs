@@ -8,10 +8,12 @@ namespace Blog.App.Controllers
     public class RoleController : Controller
     {
         private readonly IRoleService _roleService;
+        private readonly ILogger<RoleController> _logger;
 
-        public RoleController(IRoleService roleService)
+        public RoleController(IRoleService roleService, ILogger<RoleController> logger)
         {
             _roleService = roleService;
+            _logger = logger;
         }
         [HttpGet]
         [Authorize]
@@ -29,6 +31,7 @@ namespace Blog.App.Controllers
         public async Task<IActionResult> DeleteRole(int id)
         {
             await _roleService.DeleteRoleAsync(id);
+            _logger.LogInformation($"Роль  {id} удалена пользователем {User.Identity.Name}");
             return RedirectToAction("GetRoles","Role");
         }
         [HttpGet]
@@ -44,6 +47,7 @@ namespace Blog.App.Controllers
         public async Task<IActionResult>AddRoleAsync(RoleAddViewModel model)
         {
             await _roleService.AddRoleAsync(model);
+            _logger.LogInformation($"Роль {model.Name} успешно создана");
             return RedirectToAction("GetRoles", "Role");
         }
         [HttpGet]
@@ -60,8 +64,15 @@ namespace Blog.App.Controllers
         [Route("Role/Edit")]
         public async Task<IActionResult>EditRole(RoleEditViewModel model)
         {
-            await _roleService.EditRoleAsync(model);
-            return RedirectToAction("GetRoles", "Role");
+            if(ModelState.IsValid)
+            {
+                await _roleService.EditRoleAsync(model);
+                _logger.LogInformation($"Роль {model.Name} успешно изменена");
+                return RedirectToAction("GetRoles", "Role");
+            }
+            _logger.LogError($"Произошла ошибка при редактирвоании роли {model.Id} пользователем {User.Identity.Name}");
+            return View(model);
+            
         }
     }
 }

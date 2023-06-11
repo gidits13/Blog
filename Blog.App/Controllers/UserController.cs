@@ -19,15 +19,17 @@ namespace Blog.App.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IRoleService _roleService;
+        private readonly ILogger<UserController> _logger;
 
         //public UserController(SignInManager<User> signInManager, UserManager<User> userManager, IUserService userService)
-        public UserController(IUserService userService, IMapper mapper, IRoleService roleService)
+        public UserController(IUserService userService, IMapper mapper, IRoleService roleService, ILogger<UserController> logger)
         {
             // _signInManager = signInManager;
             // _userManager = userManager;
             _userService = userService;
             _mapper = mapper;
             _roleService = roleService;
+            _logger = logger;
         }
         [HttpGet]
         [Route("Register")]
@@ -42,6 +44,7 @@ namespace Blog.App.Controllers
                 var result = await _userService.RegisterAsync(model);
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation($"Зарегестрирован новый пользователь { model.Name} - { model.LastName}");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -73,6 +76,7 @@ namespace Blog.App.Controllers
             var result = await _userService.CreateAsync(model);
             if (result.Succeeded)
             {
+                _logger.LogInformation($"Зарегестрирован новый пользователь {model.Name} - {model.LastName}");
                 return RedirectToAction("GetUsers", "User");
             }
             else
@@ -88,7 +92,7 @@ namespace Blog.App.Controllers
        
         [HttpGet]
         [Route("Login")]
-        public async Task<IActionResult> Login()
+        public  IActionResult Login()
         {
             return View();
         }
@@ -104,11 +108,13 @@ namespace Blog.App.Controllers
 				var result = await _userService.Login(model);
 				if (result.Succeeded)
                 {
+                    _logger.LogInformation($"Успешный вход с систему {model.Email}");
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
                     ModelState.AddModelError("", "error");
+                    _logger.LogWarning($"Ошибка аутентификации {model.Email}");
                 }
             }
             return View(model);
@@ -119,6 +125,7 @@ namespace Blog.App.Controllers
         public async Task<IActionResult> Logout()
         {
             await _userService.Logout();
+            _logger.LogInformation($"Logout successfully signed out. {User.Identity.Name}");
             return RedirectToAction("Index", "Home");
         }
 
@@ -139,6 +146,7 @@ namespace Blog.App.Controllers
         public async Task<IActionResult>DeleteUser(int id)
         {
             await _userService.DeleteUserByIdAsync(id);
+            _logger.LogInformation($"Delete user {id}");
             return RedirectToAction("GetUsers", "User");
         }
         [HttpGet]
@@ -167,10 +175,14 @@ namespace Blog.App.Controllers
         {
             var result = await _userService.EditAsync(model);
             if (result.Succeeded)
+            {
+                _logger.LogInformation($"Данны пользователя {model.Email} успешно изменены");
                 return RedirectToAction("Index", "Home");
+            }
             else
             {
                 ModelState.AddModelError("", result.Errors.FirstOrDefault().Description);
+                _logger.LogError($"Произошла ошибка при редактирвоании данных пользователя {model.Email}");
                 return View(model);
             }
         }
@@ -189,11 +201,15 @@ namespace Blog.App.Controllers
         public async Task<IActionResult> EditUserAdminMode(UserEditAdminModeViewModel model, int id)
         {
             var result =await _userService.EditAdminAsync(model, id);
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
-				return RedirectToAction("GetUsers", "User");
-			}
-            else return View(model);
+                _logger.LogInformation($"Данны пользователя {model.Email} успешно изменены");
+                return RedirectToAction("GetUsers", "User");
+            }
+            else {
+                _logger.LogError($"Произошла ошибка при редактирвоании данных пользователя {model.Email}");
+                return View(model);
+            } 
 		}
         [HttpGet]
         [Authorize]
@@ -211,8 +227,16 @@ namespace Blog.App.Controllers
         {
             var result =await _userService.ChangePassword(model);
             if (result.Succeeded)
+            {
+                _logger.LogInformation($"пароль пользователя {model.UserId} успешно изменен");
                 return RedirectToAction("GetUser", "User", new { @id = model.UserId });
-            else return View(model);
+            }
+            else
+            {
+                _logger.LogError($"Произошла ошибка при смене пароля пользователя {model.UserId}");
+                return View(model);
+            }
+                
         }
     }
 }

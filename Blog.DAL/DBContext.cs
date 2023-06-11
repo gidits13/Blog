@@ -20,10 +20,6 @@ namespace Blog.DAL
             builder.ApplyConfiguration(new Role());
             builder.ApplyConfiguration(new Comment());
         }
-/*        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=192.168.6.17\;Database=helloappdb;User ID=sa;Password=e11kpp!!;TrustServerCertificate=True;");
-            base.OnConfiguring(optionsBuilder);
-        }*/
+
     }
 }

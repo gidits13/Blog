@@ -12,11 +12,12 @@ namespace Blog.App.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly ICommentService _commentService;
-
-        public CommentController(UserManager<User> usermanager, ICommentService commentService)
+        private readonly ILogger<CommentController> _logger;
+        public CommentController(UserManager<User> usermanager, ICommentService commentService, ILogger<CommentController> logger)
         {
             _userManager = usermanager;
             _commentService = commentService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -33,11 +34,17 @@ namespace Blog.App.Controllers
         [Route("Comment/Add")]
         public async Task<IActionResult> AddComment(CommentAddViewModel model, int postid)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            model.UserId = user.Id;
-            model.PostId = postid;
-            await _commentService.AddCommentAsync(model);
-            return RedirectToAction("ViewPost", "Post", new {@id=postid });
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                model.UserId = user.Id;
+                model.PostId = postid;
+                await _commentService.AddCommentAsync(model);
+                _logger.LogInformation($"Комментарий к статье {model.PostId} успешно добавлено пользователем {model.UserId}");
+                return RedirectToAction("ViewPost", "Post", new { @id = postid });
+            }
+            _logger.LogError($"Произошла ошибка при добавлении комментария к статье {postid}");
+            return View(model);
         }
         [HttpGet]
         [Authorize]
@@ -45,6 +52,7 @@ namespace Blog.App.Controllers
         public async Task<IActionResult> deleteComment(int id, int postid)
         {
             await _commentService.DeleteCommentAsync(id);
+            _logger.LogInformation($"deleted {postid}");
             return RedirectToAction("ViewPost", "Post", new { @id=postid});
         }
         [HttpGet]
@@ -60,8 +68,15 @@ namespace Blog.App.Controllers
         [Route("Comment/Edit")]
         public async Task<IActionResult> EditComment(CommentEditViewModel model)
         {
-            await _commentService.EditCommentAsync(model);
-            return RedirectToAction("ViewPost", "Post", new { @id = model.PostId });
+            if(ModelState.IsValid)
+            {
+                await _commentService.EditCommentAsync(model);
+                _logger.LogInformation($"Комментарий к статье {model.PostId} успешно изменен пользователем {model.UserId}");
+                return RedirectToAction("ViewPost", "Post", new { @id = model.PostId });
+            }
+            _logger.LogError($"произошла ошибка при редактировании комментария {model.Id} к статье {model.PostId} пользователем {User.Identity.Name}");
+            return View(model);
+            
         }
     }
 }

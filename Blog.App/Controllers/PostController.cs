@@ -15,13 +15,15 @@ namespace Blog.App.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly ITagService _tagService;
+        private readonly ILogger<PostController> _logger;
 
-        public PostController(IPostService postService,UserManager<User> userManager, IMapper mapper, ITagService tagService)
+        public PostController(IPostService postService, UserManager<User> userManager, IMapper mapper, ITagService tagService, ILogger<PostController> logger)
         {
             _postService = postService;
             _userManager = userManager;
             _mapper = mapper;
             _tagService = tagService;
+            _logger = logger;
         }
         [HttpGet]
         [Route("Post/Add")]
@@ -43,8 +45,10 @@ namespace Blog.App.Controllers
                 var user = await _userManager.FindByNameAsync(User.Identity.Name);
                 model.UserId = user.Id;
                 await _postService.AddPostAsync(model);
+                _logger.LogInformation($"Сатья {model.Id} успешно добавлена пользователем {model.UserId}");
                 return RedirectToAction("GetPosts","Post");
             }
+            _logger.LogError($"произошла ошибка при добавлении статьи {model.Id} пользователем {model.UserId}");
             return View(model);
         }
 
@@ -77,8 +81,14 @@ namespace Blog.App.Controllers
         [Route("Post/Edit")]
         public async Task<IActionResult> EditPost(PostEditViewModel model, int id)
         {
-            await _postService.EditPostAsync(model, id);
-            return RedirectToAction("GetPosts", "Post");
+            if(ModelState.IsValid)
+            {
+                await _postService.EditPostAsync(model, id);
+                _logger.LogInformation($"Статья {model.Id} успешно изменена пользователем {User.Identity.Name}");
+                return RedirectToAction("GetPosts", "Post");
+            }
+            _logger.LogError($"Произошла ошибка при редактировании статьи {id} пользователем {User.Identity.Name}");
+            return View(model);
         }
         [HttpGet]
         [Authorize]
@@ -86,6 +96,7 @@ namespace Blog.App.Controllers
         public async Task<IActionResult> DeletePost(int id) 
         {
             await _postService.DeletePostAsync(id);
+            _logger.LogInformation($"Статья {id} удалена пользвоателем {User.Identity.Name}");
             return RedirectToAction("GetPosts", "Post");
         }
         

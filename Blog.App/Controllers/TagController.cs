@@ -9,10 +9,12 @@ namespace Blog.App.Controllers
     public class TagController : Controller
     {
         private readonly ITagService _tagService;
+        private readonly ILogger<TagController> _logger;
 
-        public TagController(ITagService tagService)
+        public TagController(ITagService tagService, ILogger<TagController> logger)
         {
             _tagService = tagService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -38,8 +40,15 @@ namespace Blog.App.Controllers
         [Route("Tag/Add")]
         public async Task<IActionResult> AddTag(TagAddViewModel model)
         {
-            await _tagService.AddTag(model);
-            return RedirectToAction("GetTags", "Tag");
+            if (ModelState.IsValid)
+            {
+                await _tagService.AddTag(model);
+                _logger.LogInformation($"Тэг {model.Name} успешно создан");
+                return RedirectToAction("GetTags", "Tag");
+            }
+            _logger.LogError($"Произошла ошибка при добавленни тэга {model.Name} пользователем {User.Identity.Name}");
+            return View(model);
+            
         }
         [HttpGet]
         [Authorize]
@@ -47,6 +56,7 @@ namespace Blog.App.Controllers
         public async Task<IActionResult> deleteTag(int id)
         {
             await _tagService.DeleteTag(id);
+            _logger.LogInformation($"Тэг {id} успешно удален");
             return RedirectToAction("GetTags", "Tag");
         }
         [HttpGet]
@@ -62,8 +72,15 @@ namespace Blog.App.Controllers
         [Route("Tag/Edit")]
         public async Task<IActionResult> EditTag(TagEditViewModel model)
         {
-            await _tagService.EditTag(model);
-            return RedirectToAction("GetTags", "Tag");
+            if (ModelState.IsValid) 
+            {
+                await _tagService.EditTag(model);
+                _logger.LogInformation($"Тэг {model.Name} успешно изменен");
+                return RedirectToAction("GetTags", "Tag");
+            }
+            _logger.LogError($"ошибка редактирования тэга {model.Name} пользователем {User.Identity.Name}");
+            return View(model);
+
         }
     }
 }
