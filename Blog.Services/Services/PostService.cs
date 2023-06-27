@@ -101,6 +101,7 @@ namespace Blog.Services.Services
         public async Task<PostViewModel> GetPostByIdAsync(int id)
         {
             var post = await  _postRepository.GetPostByIdAsync(id);
+            if (post == null) return null;
             PostViewModel model = new PostViewModel();
             model = _mapper.Map<PostViewModel>(post);
             var comments = await _commentRepository.GetCommentsByPostAsync(model.Id);

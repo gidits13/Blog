@@ -16,5 +16,6 @@ namespace Blog.Services.Services.Interfaces
         Task DeleteCommentAsync(int id);
         Task<List<Comment>> GetCommentsByPostAsync(int postId);
         Task<Comment> GetCommentByIdAsync(int id);
+        Task<Comment> GetCommentByIdAsyncAsNoTracking(int id);
     }
 }

@@ -52,7 +52,7 @@ namespace Blog.Services.Services
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            return await _userManager.Users.Include(u=>u.Roles).ToListAsync();
         }
 
         public async Task<User> GetUserByIdAsync(int id)

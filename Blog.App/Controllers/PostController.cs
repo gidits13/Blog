@@ -25,6 +25,10 @@ namespace Blog.App.Controllers
             _tagService = tagService;
             _logger = logger;
         }
+        /// <summary>
+        /// Возвращает представление добавления статьи
+        /// </summary>
+        /// <returns>Представление добавления статьи</returns>
         [HttpGet]
         [Route("Post/Add")]
         [Authorize]
@@ -35,6 +39,11 @@ namespace Blog.App.Controllers
             model.Tags = tags.Select(x => new TagViewModel() { Id = x.Id, Name = x.Name }).ToList();
             return View(model);
         }
+        /// <summary>
+        /// Добавление статьи
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Post/Add")]
         [Authorize]
@@ -51,7 +60,10 @@ namespace Blog.App.Controllers
             _logger.LogError($"произошла ошибка при добавлении статьи {model.Id} пользователем {model.UserId}");
             return View(model);
         }
-
+        /// <summary>
+        /// Возвращет представление для отображения всех статей
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Posts")]
@@ -60,6 +72,11 @@ namespace Blog.App.Controllers
             var model = await _postService.GetAllPostsAsync(); 
             return View(model);
         }
+        /// <summary>
+        /// Возвращает представление просмотра статью по id
+        /// </summary>
+        /// <param name="id">id статьи</param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Posts/View")]
@@ -68,6 +85,11 @@ namespace Blog.App.Controllers
             var model =await _postService.GetPostByIdAsync(id);
             return View(model);
         }
+        /// <summary>
+        /// Возвращает представление оя редактирования статьи
+        /// </summary>
+        /// <param name="id">id статьи</param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Post/Edit")]
@@ -76,6 +98,12 @@ namespace Blog.App.Controllers
             var model = await _postService.EditPostAsync(id);
             return View(model); 
         }
+        /// <summary>
+        /// Редаткирование статьи
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("Post/Edit")]
@@ -90,6 +118,11 @@ namespace Blog.App.Controllers
             _logger.LogError($"Произошла ошибка при редактировании статьи {id} пользователем {User.Identity.Name}");
             return View(model);
         }
+        /// <summary>
+        /// Удаление статью
+        /// </summary>
+        /// <param name="id"> id статьи</param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Post/Delete/")]

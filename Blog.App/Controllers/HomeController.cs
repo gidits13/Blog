@@ -3,6 +3,7 @@ using Blog.Services.Services.Interfaces;
 using Blog.Services.ViewModels.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 
 namespace Blog.App.Controllers
 {
@@ -11,7 +12,7 @@ namespace Blog.App.Controllers
 
         private readonly IHomeService _homeService;
         private readonly ILogger<HomeController> _logger;
-
+        
         public HomeController(IHomeService homeService, ILogger<HomeController> logger)
         {
             _homeService = homeService;
@@ -22,6 +23,10 @@ namespace Blog.App.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Генерация начальных пользователей и ролей
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("SetUp")]
         public async Task<IActionResult> SetUp()
@@ -30,6 +35,11 @@ namespace Blog.App.Controllers
             _logger.LogInformation($"Созданы базовые учетные записи и Роли");
             return RedirectToAction("Index", "Home");
         }
+        /// <summary>
+        /// Обработака http статусов ошибок
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("Home/Error")]
         public IActionResult Error(int? statusCode=null)

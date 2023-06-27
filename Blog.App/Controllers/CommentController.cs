@@ -19,7 +19,11 @@ namespace Blog.App.Controllers
             _commentService = commentService;
             _logger = logger;
         }
-
+        /// <summary>
+        /// Метод возвращет представление для добавления комментария к статье
+        /// </summary>
+        /// <param name="postId">ID статьи</param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Comment/Add")]
@@ -28,7 +32,12 @@ namespace Blog.App.Controllers
             var model = new CommentAddViewModel { PostId = postId };
             return View(model);
         }
-
+        /// <summary>
+        /// Добавление комментария к статье
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="postid"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("Comment/Add")]
@@ -46,6 +55,12 @@ namespace Blog.App.Controllers
             _logger.LogError($"Произошла ошибка при добавлении комментария к статье {postid}");
             return View(model);
         }
+        /// <summary>
+        /// Удаление комментария
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="postid"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Comment/delete{id}/{postid}")]
@@ -55,6 +70,11 @@ namespace Blog.App.Controllers
             _logger.LogInformation($"deleted {postid}");
             return RedirectToAction("ViewPost", "Post", new { @id=postid});
         }
+        /// <summary>
+        /// Метод возвращает предствление для редактирования комментария
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route(("Comment/Edit"))]
@@ -63,6 +83,11 @@ namespace Blog.App.Controllers
             var model =await _commentService.EditCommentAsync(id);
             return View(model);
         }
+        /// <summary>
+        /// Изменени комментария
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("Comment/Edit")]

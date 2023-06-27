@@ -52,5 +52,9 @@ namespace Blog.Services.Services
             return await _tagRepository.GetAllTagsAsync();
         }
 
+        public async Task<Tag> GetTagById(int id)
+        {
+            return await _tagRepository.GetTagAsync(id);
+        }
     }
 }

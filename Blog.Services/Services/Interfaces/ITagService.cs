@@ -15,5 +15,6 @@ namespace Blog.Services.Services.Interfaces
         Task<TagEditViewModel> EditTag(int id);
         Task DeleteTag(int id);
         Task<List<Tag>>GetTags();
+        Task<Tag>GetTagById(int id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Blog.DAL.Models;
 using Blog.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,10 @@ namespace Blog.DAL.Repositories
         public async Task<List<Comment>> GetCommentsByPostAsync(int id)
         {
             return await _dbContext.Comments.Where(c=>c.PostId==id).Include(c=>c.User).ToListAsync();
+        }
+        public async Task<Comment> GetCommentByIdNoTracking(int id)
+        {
+            return await _dbContext.Comments.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

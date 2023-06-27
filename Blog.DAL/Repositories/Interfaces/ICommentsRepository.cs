@@ -15,5 +15,6 @@ namespace Blog.DAL.Repositories.Interfaces
         Task AddCommentAsync(Comment comment);
         Task DeleteCommentAsync(Comment comment);
         Task EditCommentAsync(Comment comment);
+        Task<Comment> GetCommentByIdNoTracking(int id);
     }
 }

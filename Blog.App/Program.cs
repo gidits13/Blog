@@ -20,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Blog.App"))).AddIdentity<User, Role>(opts =>
+builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Blog.DAL"))).AddIdentity<User, Role>(opts =>
 {
 	opts.Password.RequiredLength = 5;
 	opts.Password.RequireNonAlphanumeric = false;

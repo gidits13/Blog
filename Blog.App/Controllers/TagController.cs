@@ -16,7 +16,10 @@ namespace Blog.App.Controllers
             _tagService = tagService;
             _logger = logger;
         }
-
+        /// <summary>
+        /// Возвращает представление для просмотра всех тэгов
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Tags")]
@@ -26,7 +29,10 @@ namespace Blog.App.Controllers
             var model = new TagsViewModel { Tags = tags };
             return View(model);
         }
-
+        /// <summary>
+        /// Возвращает представление для просмотра тэга
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Tag/Add")]
@@ -35,6 +41,11 @@ namespace Blog.App.Controllers
             var model = new TagAddViewModel();
             return View(model);
         }
+        /// <summary>
+        /// Создние нового тэга
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
         [Route("Tag/Add")]
@@ -50,6 +61,11 @@ namespace Blog.App.Controllers
             return View(model);
             
         }
+        /// <summary>
+        /// Удаление тэга
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Tag/Delete")]
@@ -59,6 +75,11 @@ namespace Blog.App.Controllers
             _logger.LogInformation($"Тэг {id} успешно удален");
             return RedirectToAction("GetTags", "Tag");
         }
+        /// <summary>
+        /// Возвращаетпредставление для редактирования тэга
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("Tag/Edit")]
@@ -67,6 +88,11 @@ namespace Blog.App.Controllers
             var model =await _tagService.EditTag(id);
             return View(model);
         }
+        /// <summary>
+        /// изменение тега
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("Tag/Edit")]

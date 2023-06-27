@@ -31,10 +31,18 @@ namespace Blog.App.Controllers
             _roleService = roleService;
             _logger = logger;
         }
+        /// <summary>
+        /// Возвращаетпредставление для регистрации нового пользователя
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("Register")]
         public IActionResult Register() { return View(); }
-
+        /// <summary>
+        /// Создание нового пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Regsiter(UserRegisterViewModel model)
@@ -57,6 +65,10 @@ namespace Blog.App.Controllers
             }
             return View(model);
         }
+        /// <summary>
+        /// Возвращаетпредставление для создания пользователя без регистрации
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
 		[Route("User/Create")]
@@ -67,6 +79,11 @@ namespace Blog.App.Controllers
             model.Roles = roles.Select(r => new RoleViewModel() { Id = r.Id, Name = r.Name, }).ToList();
             return View(model);
         }
+        /// <summary>
+        /// создание пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("User/Create")]
@@ -89,14 +106,21 @@ namespace Blog.App.Controllers
             return View(model);
         }
 
-       
+       /// <summary>
+       /// Возвращает представления для входа в систему
+       /// </summary>
+       /// <returns></returns>
         [HttpGet]
         [Route("Login")]
         public  IActionResult Login()
         {
             return View();
         }
-
+        /// <summary>
+        /// Вход в систему
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Login")]
@@ -119,6 +143,10 @@ namespace Blog.App.Controllers
             }
             return View(model);
         }
+        /// <summary>
+        /// выход из системы
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("Logout")]
         [Authorize]
@@ -128,7 +156,10 @@ namespace Blog.App.Controllers
             _logger.LogInformation($"Logout successfully signed out. {User.Identity.Name}");
             return RedirectToAction("Index", "Home");
         }
-
+        /// <summary>
+        /// Возвращает представление со списком всех пользователей
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("Users")]
         [Authorize(Roles = "Admin,Moderator")]
@@ -139,7 +170,11 @@ namespace Blog.App.Controllers
             model.Users = users;
             return View(model);
         }
-
+        /// <summary>
+        /// Удаление пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("Users/Delete")]
         [Authorize(Roles = "Admin,Moderator")]
@@ -149,6 +184,11 @@ namespace Blog.App.Controllers
             _logger.LogInformation($"Delete user {id}");
             return RedirectToAction("GetUsers", "User");
         }
+        /// <summary>
+        /// Возвращает представление для просмотра профиля пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("User")]
         [Authorize]
@@ -158,7 +198,11 @@ namespace Blog.App.Controllers
             var model = _mapper.Map<UserViewModel>(user);
             return View(model);
         }
-
+        /// <summary>
+        /// возвращает представление для редактирования профиля пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("User/Edit")]
         [Authorize]
@@ -168,6 +212,11 @@ namespace Blog.App.Controllers
             var model = _mapper.Map<UserEditViewModel>(user);
             return View(model);
         }
+        /// <summary>
+        /// Изменение данных профиля пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("User/Edit")]
@@ -186,7 +235,11 @@ namespace Blog.App.Controllers
                 return View(model);
             }
         }
-
+        /// <summary>
+        /// Возвращает представление для редактированя профиля пользователя админисратором
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles ="Admin")]
         [Route("User/EditAdmin")]
@@ -195,6 +248,12 @@ namespace Blog.App.Controllers
             var model = await _userService.GetEditUserAdminMode(id);
             return View(model);
         }
+        /// <summary>
+        /// Внесение изменений в профиль пользователя администраором
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("User/EditAdmin")]
@@ -211,6 +270,11 @@ namespace Blog.App.Controllers
                 return View(model);
             } 
 		}
+        /// <summary>
+        /// Возвращает модель для изменения пароля
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("User/ChangePassword")]
@@ -220,6 +284,11 @@ namespace Blog.App.Controllers
             var model = new ChangePasswordViewModel() { UserId = user.Id }; 
             return View(model);
         }
+        /// <summary>
+        /// Изменение пароля
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("User/ChangePassword")]

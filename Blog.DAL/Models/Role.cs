@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 namespace Blog.DAL.Models
 {
     public class Role : IdentityRole<int>, IEntityTypeConfiguration<Role>
-    {
-       
+    { 
        public List<User>? Users { get; set; }
         public void Configure(EntityTypeBuilder<Role> builder)
         {
